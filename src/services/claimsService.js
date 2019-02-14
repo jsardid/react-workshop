@@ -1,44 +1,43 @@
-export default [
-  {
-    id: "CLAIM0001",
-    type: "Storm",
-    cause: "Hail",
-    date: "01/01/2001"
-  },
-  {
-    id: "CLAIM0002",
-    type: "Natural Disaster",
-    cause: "Earth Quake",
-    date: "02/02/2002"
-  },
-  {
-    id: "CLAIM0003",
-    type: "Breakage",
-    cause: "Glass",
-    date: "03/03/2003"
-  },
-  {
-    id: "CLAIM0004",
-    type: "Storm",
-    cause: "Wind",
-    date: "04/04/2004"
-  },
-  {
-    id: "CLAIM0005",
-    type: "Natural Disaster",
-    cause: "Flooding",
-    date: "05/05/2005"
-  },
-  {
-    id: "CLAIM0006",
-    type: "Storm",
-    cause: "Rain",
-    date: "06/06/2006"
-  },
-  {
-    id: "CLAIM0007",
-    type: "Breakage",
-    cause: "Saintaire",
-    date: "07/07/2007"
-  }
-];
+import axios from "axios";
+
+export default function getClaims() {
+  return axios({
+    method: "GET",
+    url:
+      "https://diaas-dev.gtaia-test-domain.net/fid-dev-lux-10134/insurance/claims",
+    headers: {
+      NSP_USERID: "ACHANCE",
+      "x-api-key": "48SmqcLpec3t1TO8EMzaDaamMz25pDZ469NFux41"
+    },
+    responseType: "json"
+  }).then(response => {
+    return mapResponseToUIModel(response.data);
+  });
+}
+
+function mapResponseToUIModel(response) {
+  const itemsArray = getItemsArray(response);
+  return itemsArray.map(
+    item =>
+      (item &&
+        item.summary && {
+          id: item.summary["claim_event:identifier"],
+          type: item.summary["claim_event:type"],
+          cause: item.summary["claim_cause:type"],
+          date: item.summary["claim_event:date"]
+        }) ||
+      {}
+  );
+}
+
+function getItemsArray(response) {
+  return (
+    (response &&
+      response._links &&
+      response._links.item &&
+      ((Array.isArray(response._links.item) && response._links.item) || [
+        response._links.item
+      ])) ||
+    []
+  );
+}

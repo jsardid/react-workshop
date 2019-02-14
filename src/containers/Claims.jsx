@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 
-import claimsListData from "../services/claimsService";
+import getClaims from "../services/claimsService";
 
 import Header from "../components/Header";
 import ClaimsList from "../components/ClaimsList";
@@ -12,9 +12,16 @@ class App extends Component {
     super(props);
     this.selectClaim = this.selectClaim.bind(this);
     this.state = {
-      claimsList: claimsListData,
+      claimsList: [],
       selectedClaim: null
     };
+  }
+
+  componentDidMount() {
+    this.setState({ loadingClaims: true });
+    getClaims().then(claimsList => {
+      this.setState({ claimsList, loadingClaims: false });
+    });
   }
 
   selectClaim(claim) {
@@ -22,13 +29,21 @@ class App extends Component {
   }
 
   render() {
-    const { claimsList, selectedClaim } = this.state;
+    const { claimsList, selectedClaim, loadingClaims } = this.state;
+    // eq:
+    // const claimsList = state.claimsList;
+    // const selectedClaim = state.selectedClaim;
+    // const loadingClaims = state.loadingClaims;
     return (
       <StyledClaimsScreen>
         <Header />
         <StyledClaimsSection>
           <StyledClaimsListLayout>
-            <ClaimsList claims={claimsList} claimClick={this.selectClaim} />
+            <ClaimsList
+              loading={loadingClaims}
+              claims={claimsList}
+              claimClick={this.selectClaim}
+            />
           </StyledClaimsListLayout>
           <StyledClaimDetailLayout>
             <ClaimDetail claim={selectedClaim} />
@@ -47,7 +62,7 @@ const StyledClaimsScreen = styled.div`
 const StyledClaimsSection = styled.div`
   display: flex;
   flex-direction: row;
-  max-width: 1200px;
+  width: 1200px;
   background-color: #c7c7c7;
   margin: 30px auto;
   padding: 20px;

@@ -2,7 +2,9 @@ import React from "react";
 import styled from "styled-components";
 
 function ClaimDetail(props) {
-  const { claim } = props; // const claim = props.claim
+  const { claim } = props;
+  // eq:
+  // const claim = props.claim;
   return (
     <div>
       <StyledTitle>{(claim && claim.id) || "Claim Detail"}</StyledTitle>

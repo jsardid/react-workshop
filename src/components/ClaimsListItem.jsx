@@ -2,10 +2,13 @@ import React from "react";
 import styled from "styled-components";
 
 function ClaimsListItem(props) {
-  const { claim, claimClick } = props; // eq. -> const claim = props.claim; const claimClick = props.claimClick
+  const { claim, claimClick } = props; 
+  // eq: 
+  // const claim = props.claim; 
+  // const claimClick = props.claimClick;
   return (
     <StyledClaimListItem onClick={() => claimClick(claim)}>
-      {claim.id}
+      {claim.id || "No ID"}
     </StyledClaimListItem>
   );
 }

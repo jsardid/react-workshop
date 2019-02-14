@@ -4,15 +4,21 @@ import styled from "styled-components";
 import ClaimsListItem from "./ClaimsListItem";
 
 function ClaimsList(props) {
-  const { claims, claimClick } = props; // eq. -> const claims = props.claims; const claimClick = props.claimClick
+  const { claims, claimClick, loading } = props;
+  // eq:
+  // const claims = props.claims;
+  // const claimClick = props.claimClick;
+  // const loading = props.loading;
   return (
     <div>
       <StyledTitle>Claims List</StyledTitle>
-      <StyledClaimList>
-        {claims.map(claim => (
-          <ClaimsListItem claim={claim} claimClick={claimClick} />
-        ))}
-      </StyledClaimList>
+      {(loading && <StyledLoading>Loading Claims...</StyledLoading>) || (
+        <StyledClaimList>
+          {claims.map(claim => (
+            <ClaimsListItem claim={claim} claimClick={claimClick} />
+          ))}
+        </StyledClaimList>
+      )}
     </div>
   );
 }
@@ -21,6 +27,10 @@ const StyledClaimList = styled.div`
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+`;
+
+const StyledLoading = styled.div`
+  margin: 20px;
 `;
 
 const StyledTitle = styled.h1`
